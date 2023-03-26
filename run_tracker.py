@@ -8,8 +8,8 @@ from ncc_tracker_example import NCCTracker, NCCParams
 
 
 # set the path to directory where you have the sequences
-dataset_path = '' # TODO: set to the dataet path on your disk
-sequence = 'bolt1'  # choose the sequence you want to test
+dataset_path = 'vot2014' # TODO: set to the dataet path on your disk
+sequence = 'bolt'  # choose the sequence you want to test
 
 # visualization and setup parameters
 win_name = 'Tracking window'
