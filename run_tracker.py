@@ -4,18 +4,18 @@ import cv2
 
 from sequence_utils import VOTSequence
 from ncc_tracker_example import NCCTracker, NCCParams
-#from ms_tracker import MeanShiftTracker, MSParams
+from ms_tracker import MeanShiftTracker, MSParams
 
 
 # set the path to directory where you have the sequences
 dataset_path = 'vot2014' # TODO: set to the dataet path on your disk
-sequence = 'bolt'  # choose the sequence you want to test
+sequence = 'drunk'  # choose the sequence you want to test
 
 # visualization and setup parameters
 win_name = 'Tracking window'
-reinitialize = True
-show_gt = False
-video_delay = 15
+reinitialize = True # reinitialize tracker after failure
+show_gt = False  # show ground-truth bounding box
+video_delay = 15 # delay between frames (in ms)
 font = cv2.FONT_HERSHEY_PLAIN
 
 # create sequence object
@@ -23,10 +23,10 @@ sequence = VOTSequence(dataset_path, sequence)
 init_frame = 0
 n_failures = 0
 # create parameters and tracker objects
-parameters = NCCParams()
-tracker = NCCTracker(parameters)
-#parameters = MSParams()
-#tracker = MeanShiftTracker(parameters)
+# parameters = NCCParams()
+# tracker = NCCTracker(parameters)
+parameters = MSParams()
+tracker = MeanShiftTracker(parameters)
 
 time_all = 0
 

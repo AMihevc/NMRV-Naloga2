@@ -97,3 +97,9 @@ class Tracker():
 
     def track(self, image):
         raise NotImplementedError
+
+
+
+def normalize_histogram(histogram):
+    histogram_sum = sum(histogram)
+    return np.array([x / histogram_sum for x in histogram])
