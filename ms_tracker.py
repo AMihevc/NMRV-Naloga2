@@ -1,8 +1,11 @@
 import numpy as np
 import cv2
-
 from ex2_utils import Tracker, create_epanechnik_kernel, extract_histogram, backproject_histogram, get_patch, normalize_histogram
 
+def make_ker_odd(ker):
+    if ker % 2 == 0:
+        ker += 1
+    return ker
 class MeanShiftTracker(Tracker):
     
     
@@ -11,7 +14,7 @@ class MeanShiftTracker(Tracker):
         self.alpha = 0.01       #learning rate for the histogram
         self.min_change = 0.1   #minimum change in the position
         self.max_iters = 50     #maximum number of iterations
-        self.sigma = 0.5        #sigma for the epanechnikov kernel
+        self.sigma = 10        #sigma for the epanechnikov kernel
     
         if len(region) == 8:
             x_ = np.array(region[::2]) #x_ and y_ are the coordinates of the bounding box
@@ -33,15 +36,9 @@ class MeanShiftTracker(Tracker):
         #print(f"Position: {self.position}")
  
         #make kernel odd size since epanechnikov kernel is also odd
-        ker_size_x = int(np.floor(region[2]))
-        ker_size_y = int(np.floor(region[3]))
-        if ker_size_x % 2 == 0:
-            ker_size_x += 1
-        if ker_size_y % 2 == 0:
-            ker_size_y += 1
-        
-        self.size = (ker_size_x, ker_size_y)
+        self.size = (make_ker_odd(int(np.floor(region[2]))), make_ker_odd(int(np.floor(region[3]))))  
         #print(f"Size: {self.size}")
+        
         #create epanechnikov kernel
         self.e_kernel = create_epanechnik_kernel(self.size[0], self.size[1], self.sigma) 
 
@@ -71,7 +68,8 @@ class MeanShiftTracker(Tracker):
             v = np.sqrt(np.divide(q_init, (p + self.min_change ))) #v is the vector of the histogram
             w = backproject_histogram(patch, v , self.bins) #w is the backprojected histogram
 
-            # calculate the mean shift move for x an y direction
+            # calculate the mean shift move for x an y direction 
+            # use w instead of the patch in mode seeking
             x_shift = np.sum((np.multiply(self.x_kernel, w) ) / np.sum(w))
             y_shift = np.sum((np.multiply(self.y_kernel, w) ) / np.sum(w))
 
@@ -88,13 +86,14 @@ class MeanShiftTracker(Tracker):
                     #print("stopped because of mean")
                     break
 
-            # posodobi histogram
+            # update histogram
             q_new = extract_histogram(patch, self.bins, self.e_kernel) #q is the histogram of the patch
-            q_init = q_init * (1 - self.alpha) + q_new * self.alpha
+            q_init = q_init * (1 - self.alpha) + q_new * self.alpha #update the histogram using weighted average
 
             #update the position
             self.position = (self.position[0] + x_shift, self.position[1] + y_shift)
             
+            #append the position to the history for better convergence
             pos_history.append(self.position)
             iter += 1
 

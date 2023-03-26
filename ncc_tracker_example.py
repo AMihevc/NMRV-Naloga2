@@ -36,6 +36,7 @@ class NCCTracker(Tracker):
         if right - left < self.template.shape[1] or bottom - top < self.template.shape[0]:
             return [self.position[0] + self.size[0] / 2, self.position[1] + self.size[1] / 2, self.size[0], self.size[1]]
 
+        # ncc part
         cut = image[int(top):int(bottom), int(left):int(right)]
 
         matches = cv2.matchTemplate(cut, self.template, cv2.TM_CCOEFF_NORMED)

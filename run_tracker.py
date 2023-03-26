@@ -9,13 +9,13 @@ from ms_tracker import MeanShiftTracker, MSParams
 
 # set the path to directory where you have the sequences
 dataset_path = 'vot2014' # TODO: set to the dataet path on your disk
-sequence = 'drunk'  # choose the sequence you want to test
+sequence = 'bolt'  # choose the sequence you want to test
 
 # visualization and setup parameters
 win_name = 'Tracking window'
 reinitialize = True # reinitialize tracker after failure
-show_gt = False  # show ground-truth bounding box
-video_delay = 15 # delay between frames (in ms)
+show_gt = True  # show ground-truth bounding box
+video_delay = 150 # delay between frames (in ms)
 font = cv2.FONT_HERSHEY_PLAIN
 
 # create sequence object
