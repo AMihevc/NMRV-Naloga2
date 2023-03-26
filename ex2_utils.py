@@ -6,15 +6,19 @@ import cv2
 from ex1_utils import gausssmooth
 
 
-def generate_responses_1(pos_max_1, max_1, pos_max2, max_2, smooth_sigma):
+def generate_responses_custom(pos_max_1, max_1, pos_max2, max_2, smooth_sigma):
     responses = np.zeros((100, 100), dtype=np.float32)
-    # responses[70, 50] = 1
-    # responses[50, 70] = 0.5
+    
     responses[pos_max_1[0], pos_max_1[1]] = max_1
     responses[pos_max2[0], pos_max2[1]] = max_2
 
-    #sigma je bila 10 
     return gausssmooth(responses, smooth_sigma)
+
+def generate_responses_1():
+    responses = np.zeros((100, 100), dtype=np.float32)
+    responses[70, 50] = 1
+    responses[50, 70] = 0.5
+    return gausssmooth(responses, 10)
 
 def get_patch(img, center, sz):
     x0 = round(int(center[0] - sz[0] / 2))
